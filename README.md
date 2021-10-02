@@ -1,5 +1,5 @@
 # Cabrillo CIS-91 Public Course Files 
 
-This is a work in progress.
+These are the required TerraForm files for CIS-91.
 
 Author: Karl-Heinz Konrad
