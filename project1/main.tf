@@ -39,17 +39,17 @@ provider "google" {
   project = var.project
 }
 
-resource "google_compute_network" "vpc_network" {
-  name = "vpc-network"
+resource "google_compute_network" "dokuwiki" {
+  name = "dokuwiki"
 }
 
-resource "google_compute_attached_disk" "data" {
-  disk = google_compute_disk.data.account_id
-  instance = 
-}
+#resource "google_compute_attached_disk" "data" {
+#  disk = google_compute_disk.data.account_id
+#  instance = 
+#}
 
-resource "google_compute_instance" "vm_instance" {
-  name         = "vm_instance"
+resource "google_compute_instance" "dokuwiki" {
+  name         = "dokuwiki"
   machine_type = var.instance
   allow_stopping_for_update = true
 
@@ -72,9 +72,9 @@ resource "google_compute_instance" "vm_instance" {
 
 }
 
-resource "google_compute_firewall" "default-firewall" {
-  name = "default-firewall"
-  network = google_compute_network.vpc_network.name
+resource "google_compute_firewall" "cloud" {
+  name = "cloud"
+  network = google_compute_network.dokuwiki.name
   allow {
     protocol = "tcp"
     ports = ["22","80"]
