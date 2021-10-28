@@ -49,10 +49,21 @@ resource "google_compute_disk" "data" {
   physical_block_size_bytes = 4096
 }
 
-#resource "google_compute_attached_disk" "data" {
-#  disk = google_compute_disk.data.account_id
-#  instance = 
-#}
+
+resource "google_storage_bucket" "cabrillo-cis91-khk-dokuwiki-backup" {
+  name          = "backup"
+  force_destroy = true
+  
+  lifecycle_rule {
+    condition {
+      age = 7
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
 
 resource "google_compute_instance" "dokuwiki" {
   name         = "dokuwiki"
@@ -60,6 +71,7 @@ resource "google_compute_instance" "dokuwiki" {
   allow_stopping_for_update = true
 
   boot_disk {
+    device_name = "system"
     initialize_params {
       image = var.image
     }
@@ -77,7 +89,7 @@ resource "google_compute_instance" "dokuwiki" {
   }
 
     service_account {
-    email  = google_service_account.proj1-service-account.email
+    email  = google_service_account.backup-user.email
     scopes = ["cloud-platform"]
     }
 
@@ -93,15 +105,15 @@ resource "google_compute_firewall" "cloud" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-resource "google_service_account" "proj1-service-account" {
-  account_id   = "proj1-service-account"
-  display_name = "proj1-service-account"
+resource "google_service_account" "backup-user" {
+  account_id   = "backup-user"
+  display_name = "backup-user"
   description = "Service account for project 1"
 }
 
 resource "google_project_iam_member" "project_member" {
   role = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.proj1-service-account.email}"
+  member = "serviceAccount:${google_service_account.backup-user.email}"
 }
 
 output "external-ip" {
