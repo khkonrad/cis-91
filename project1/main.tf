@@ -43,6 +43,12 @@ resource "google_compute_network" "dokuwiki" {
   name = "dokuwiki"
 }
 
+resource "google_compute_disk" "data" {
+  name  = "test-data"
+  type  = "pd-standard"
+  physical_block_size_bytes = 4096
+}
+
 #resource "google_compute_attached_disk" "data" {
 #  disk = google_compute_disk.data.account_id
 #  instance = 
