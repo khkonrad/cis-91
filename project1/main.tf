@@ -60,7 +60,7 @@ resource "google_compute_instance" "dokuwiki" {
   }
 
   network_interface {
-    network = google_compute_network.vpc_network.name
+    network = google_compute_network.dokuwiki.name
     access_config {
     }
   }
@@ -94,5 +94,5 @@ resource "google_project_iam_member" "project_member" {
 }
 
 output "external-ip" {
-  value = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
+  value = google_compute_instance.dokuwiki.network_interface[0].access_config[0].nat_ip
 }
