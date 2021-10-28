@@ -50,13 +50,13 @@ resource "google_compute_disk" "data" {
 }
 
 
-resource "google_storage_bucket" "cabrillo-cis91-khk-dokuwiki-backup" {
-  name          = "backup"
+resource "google_storage_bucket" "backup" {
+  name          = "dokuwiki-backup-khk"
   force_destroy = true
   
   lifecycle_rule {
     condition {
-      age = 7
+      age = 2555
     }
     action {
       type = "Delete"
