@@ -1,6 +1,6 @@
 
 variable "credentials_file" { 
-  default = "../secrets/cis-91.key" 
+  default = "/home/karlheinzkonrad/secrets/cis-91.key" 
 }
 
 variable "project" {
