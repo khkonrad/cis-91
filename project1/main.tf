@@ -19,6 +19,10 @@ variable "instance" {
   default = "e2-micro"
 }
 
+variable "image" {
+  default = "ubuntu-os-cloud/ubuntu-2004-lts"
+}
+
 terraform {
   required_providers {
     google = {
@@ -36,17 +40,23 @@ provider "google" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name = "docuwiki-network"
+  name = "vpc-network"
+}
+
+resource "google_compute_attached_disk" "data" {
+  name = "data"
+  type = "pd-standard"
+  size = "100"
 }
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "dokuwiki"
+  name         = "vm_instance"
   machine_type = var.instance
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-2004-lts"
+      image = var.image
     }
   }
 
