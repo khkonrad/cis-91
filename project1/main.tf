@@ -71,7 +71,6 @@ resource "google_compute_instance" "dokuwiki" {
   allow_stopping_for_update = true
 
   boot_disk {
-    device_name = "system"
     initialize_params {
       image = var.image
     }
