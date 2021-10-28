@@ -1,6 +1,6 @@
 
 variable "credentials_file" { 
-  default = "../secrets/cis-91.key" 
+  default = "/home/karlheinzkonrad/secrets/cis-91.key" 
 }
 
 variable "project" {
@@ -13,14 +13,6 @@ variable "region" {
 
 variable "zone" {
   default = "us-central1-c"
-}
-
-variable "instance" {
-  default = "e2-micro"
-}
-
-variable "image" {
-  default = "ubuntu-os-cloud/ubuntu-2004-lts"
 }
 
 terraform {
@@ -40,22 +32,16 @@ provider "google" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name = "vpc-network"
-}
-
-resource "google_compute_attached_disk" "data" {
-  disk = google_compute_disk.data.account_id
-  instance = 
+  name = "cis91-network"
 }
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "vm_instance"
-  machine_type = var.instance
-  allow_stopping_for_update = true
+  name         = "cis91"
+  machine_type = "e2-micro"
 
   boot_disk {
     initialize_params {
-      image = var.image
+      image = "ubuntu-os-cloud/ubuntu-2004-lts"
     }
   }
 
@@ -65,11 +51,10 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-    service_account {
-    email  = google_service_account.proj1-service-account.email
+  service_account {
+    email  = google_service_account.lab08-service-account.email
     scopes = ["cloud-platform"]
-    }
-
+  }
 }
 
 resource "google_compute_firewall" "default-firewall" {
@@ -82,15 +67,15 @@ resource "google_compute_firewall" "default-firewall" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-resource "google_service_account" "proj1-service-account" {
-  account_id   = "proj1-service-account"
-  display_name = "proj1-service-account"
-  description = "Service account for project 1"
+resource "google_service_account" "lab08-service-account" {
+  account_id   = "lab08-service-account"
+  display_name = "lab08-service-account"
+  description = "Service account for lab 08"
 }
 
 resource "google_project_iam_member" "project_member" {
-  role = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.proj1-service-account.email}"
+  role = "roles/compute.viewer"
+  member = "serviceAccount:${google_service_account.lab08-service-account.email}"
 }
 
 output "external-ip" {
