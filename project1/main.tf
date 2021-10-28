@@ -44,7 +44,7 @@ resource "google_compute_network" "dokuwiki" {
 }
 
 resource "google_compute_disk" "data" {
-  name  = "test-data"
+  name  = "data"
   type  = "pd-standard"
   physical_block_size_bytes = 4096
 }
@@ -64,6 +64,11 @@ resource "google_compute_instance" "dokuwiki" {
       image = var.image
     }
   }
+
+  attached_disk {
+    source = "data"
+  }
+
 
   network_interface {
     network = google_compute_network.dokuwiki.name
