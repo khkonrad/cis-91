@@ -32,22 +32,7 @@
         owner: www-data
         group: www-data
         mode: 0750
-
-    - name: Enable service httpd and ensure it is not masked
-      ansible.builtin.systemd:
-        name: httpd
-        enabled: yes
-        masked: no
-
-#    - name: Download  using get_url
-#     become: yes
-#      get_url:
-#        url: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
-#        dest: /var/www/html
-#        mode: 0755
-#        group: www-data
-#        owner: www-data
-
+    
     - name: Unarchives the tar
       unarchive:
         src: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
@@ -57,17 +42,8 @@
         mode: 0770
         remote_src: True
 
-
-        #    - name: Change html dir ownership
-        #      file:
-        # path: /var/www/html
-        # state: directory
-        # owner: www-data
-        # group: www-data
-        # mode: "0770"
-     
-            #    - name: Unarchives the zip file
-            #         unarchive:
-            #         src: /test1/project.zip
-            #         dest: /test2
-
+    - name: Enable service httpd and ensure it is not masked
+      ansible.builtin.systemd:
+        name: apache2
+        enabled: yes
+        masked: no
