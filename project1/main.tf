@@ -65,6 +65,11 @@ resource "google_storage_bucket" "backup" {
   }
 }
 
+resource "google_storage_bucket_access_control" "public_rule" {
+  bucket = "dokuwiki-backup-khk"
+  role   = "WRITER"
+  entity = "allUsers"
+}
 
 resource "google_compute_instance" "dokuwiki" {
   name         = "dokuwiki"
