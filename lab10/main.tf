@@ -35,6 +35,13 @@ resource "google_compute_network" "vpc_network" {
   name = "cis91-network"
 }
 
+resource "google_compute_disk" "data" {
+  name  = "data"
+  type  = "pd-standard"
+  size  = "100"
+  physical_block_size_bytes = 4096
+}
+
 resource "google_compute_instance" "vm_instance" {
   name         = "cis91"
   machine_type = "e2-micro"

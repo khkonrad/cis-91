@@ -1,12 +1,31 @@
 ---
 - hosts: all
-  name: Add cis-92 packages
+  name: Partition, format and mount drive
   become: yes
   tasks:
-    - name: Install packages 
-      ansible.builtin.apt:
-        update_cache: yes
-        cache_valid_time: 3600
-        name:
-          - python3-pip 
-          - python3-venv
+     - name: Partition new disk
+       community.general.parted:
+         device: /dev/sdb
+         label: gpt
+         number: 1   
+     
+     - name: Create a ext4 filesystem on data disk     
+       community.general.filesystem:
+         fstype: ext4
+         dev: /dev/sdb1
+
+     - name: Create /data dir
+       file:
+         path: /data
+         state: directory
+         owner: root
+         group: root
+         mode: 0777
+
+     - name: Mount /data dir
+       mount:
+         path: "/var/www/"
+         src: "/dev/disk/by-id/google-persistent-disk-1"
+         fstype: ext4
+         opts: discard,defaults
+         state: mounted
