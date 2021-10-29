@@ -46,6 +46,7 @@ resource "google_compute_network" "dokuwiki" {
 resource "google_compute_disk" "data" {
   name  = "data"
   type  = "pd-standard"
+  size  = "100"
   physical_block_size_bytes = 4096
 }
 
@@ -56,7 +57,7 @@ resource "google_storage_bucket" "backup" {
   
   lifecycle_rule {
     condition {
-      age = 2555
+      age = 180
     }
     action {
       type = "Delete"
