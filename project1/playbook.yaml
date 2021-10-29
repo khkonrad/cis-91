@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: 34.71.255.226
   name: Ansible tasks for project 1
   become: yes
   tasks:
@@ -12,25 +12,44 @@
           - php
           - php-xml
 
-
     - name: Check if disk exists
-      shell: "file -sL /dev/disk/by-id/goggle-"
+      shell: "file -sL /dev/disk/by-id/goggle-persistent-disk-1"
       register: disk_exists
 
     - name: Format disk
-      shell: "mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init+=0,discard /dev/disk/by-id/google-"
+      shell: "mkfs.ext4 /dev/disk/by-id/google-persistent-disk-1"
       when: "'UUID=' not in disk_exists.stdout"
 
     - name: Mount drive
       mount:
         path: "/var/www/html"
-        src: "/dev/disk/by-id/google-"
+        src: "/dev/disk/by-id/google-persistent-disk-1"
         fstype: ext4
         opts: discard,defaults
         state: mounted
+
+        #    - name: Download Tomcat using get_url
+        #      become: yes
+        #      get_url:
+        #        url: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+        #        dest: /var/www/html
+        #        mode: 0755
+        #        group: www-data
+        #        owner: www-data
+
+    - name: Unarchives the tar
+
+
+        #    - name: Change html dir ownership
+        #      file:
+        # path: /var/www/html
+        # state: directory
+        # owner: www-data
+        # group: www-data
+        # mode: "0770"
      
-    - name: Unarchives the zip file
-         unarchive:
-         src: /test1/project.zip
-         dest: /test2
+            #    - name: Unarchives the zip file
+            #         unarchive:
+            #         src: /test1/project.zip
+            #         dest: /test2
 
