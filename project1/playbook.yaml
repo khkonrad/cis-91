@@ -11,33 +11,51 @@
           - apache2 
           - php
           - php-xml
-
-    - name: Check if disk exists
-      shell: "file -sL /dev/disk/by-id/goggle-persistent-disk-1"
-      register: disk_exists
-
-    - name: Format disk
-      shell: "mkfs.ext4 /dev/disk/by-id/google-persistent-disk-1"
-      when: "'UUID=' not in disk_exists.stdout"
+      
+    - name: Create a ext4 filesystem on data disk     
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/sdb
 
     - name: Mount drive
       mount:
-        path: "/var/www/html"
+        path: "/var/www/"
         src: "/dev/disk/by-id/google-persistent-disk-1"
         fstype: ext4
         opts: discard,defaults
         state: mounted
 
-        #    - name: Download Tomcat using get_url
-        #      become: yes
-        #      get_url:
-        #        url: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
-        #        dest: /var/www/html
-        #        mode: 0755
-        #        group: www-data
-        #        owner: www-data
+    - name: Creates directory
+      file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0750
+
+    - name: Enable service httpd and ensure it is not masked
+      ansible.builtin.systemd:
+        name: httpd
+        enabled: yes
+        masked: no
+
+#    - name: Download  using get_url
+#     become: yes
+#      get_url:
+#        url: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+#        dest: /var/www/html
+#        mode: 0755
+#        group: www-data
+#        owner: www-data
 
     - name: Unarchives the tar
+      unarchive:
+        src: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+        dest: /var/www/html
+        owner: www-data
+        group: www-data
+        mode: 0770
+        remote_src: True
 
 
         #    - name: Change html dir ownership
