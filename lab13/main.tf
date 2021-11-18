@@ -1,10 +1,10 @@
 
 variable "credentials_file" { 
-  default = "../secrets/cis-91.key" 
+  default = "/home/karlheinzkonrad/secrets/cis-91.key" 
 }
 
 variable "project" {
-  default = "cabrillo-cis91-327818"
+  default = "cabrillo-cis91"
 }
 
 variable "region" {
@@ -37,7 +37,7 @@ resource "google_compute_network" "vpc_network" {
 
 resource "google_compute_instance" "webservers" {
   count        = 3
-  name         = "iweb${count.index}"
+  name         = "web${count.index}"
   machine_type = "e2-micro"
 
   boot_disk {
