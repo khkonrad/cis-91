@@ -1,0 +1,36 @@
+---
+- hosts: all
+  name: Ansible tasks for project 1
+  become: yes
+  tasks:
+    - name: Install packages 
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name:
+          - apache2 
+          - php
+          - php-xml
+
+
+    - name: Check if disk exists
+      shell: "file -sL /dev/disk/by-id/goggle-"
+      register: disk_exists
+
+    - name: Format disk
+      shell: "mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init+=0,discard /dev/disk/by-id/google-"
+      when: "'UUID=' not in disk_exists.stdout"
+
+    - name: Mount drive
+      mount:
+        path: "/var/www/html"
+        src: "/dev/disk/by-id/google-"
+        fstype: ext4
+        opts: discard,defaults
+        state: mounted
+     
+    - name: Unarchives the zip file
+         unarchive:
+         src: /test1/project.zip
+         dest: /test2
+
