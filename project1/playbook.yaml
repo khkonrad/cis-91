@@ -1,5 +1,5 @@
 ---
-- hosts: 34.71.255.226
+- hosts: all
   name: Ansible tasks for project 1
   become: yes
   tasks:
