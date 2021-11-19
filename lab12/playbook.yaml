@@ -1,0 +1,59 @@
+---
+- hosts: all
+  name: Tasks for lab 12
+  become: yes
+  tasks:
+    - name: Install packages 
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name:
+          - python3-pip
+          - python3-venv
+          - apache2 
+          - nodejs
+
+    - name: Add user nodeuser
+      ansible.builtin.user:
+        name: nodeuser
+        comment: Node.js user
+
+    - name: Add app.js from Github
+      ansible.builtin.git:
+        repo: 'https://github.com/khkonrad/cis-91.git'
+        dest: /home/nodeuser/git
+
+    - name: Copy app.js to /home/nodeuser/
+      ansible.builtin.copy:
+        src: /home/nodeuser/git/hello-nodejs/app.js
+        dest: /home/nodeuser
+        owner: nodeuser
+        group: nodeuser
+        remote_src: yes
+
+    - name: Create systemd script
+      copy:
+        dest: /etc/systemd/system/nodejs.service
+        content: |
+          # Service desciption for node.js
+          [Unit]
+          Description=CIS-91 Lab 12
+          Documentation=https://example.com
+          After=network.target
+
+          [Service]  
+          Environment=NODE_PORT=3000
+          Type=simple
+          User=nodeuser
+          ExecStart=/usr/bin/node /home/nodeuser/app.js
+          Restart=on-failure
+
+          [Install]   
+          WantedBy=multi-user.target
+
+    - name: Enable service nodejs
+      ansible.builtin.systemd:
+        name: nodejs
+        enabled: yes
+        masked: no
+        state: started
